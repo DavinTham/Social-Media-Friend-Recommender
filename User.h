@@ -11,25 +11,27 @@ private:
     int id;
     string name;
     int age;
-    vector<string> interests;
+    string school;
+    string major;
     string location;
+    vector<string> interests;
 
 public:
-    // constructor
-    User(int id, string name, int age, string location);
+    // needed so users can be stored in a map
+    User();
+    User(int id, string name, int age, string school, string major, string location);
 
     // getters
     int getID() const;
     string getName() const;
     int getAge() const;
+    string getSchool() const;
+    string getMajor() const;
     string getLocation() const;
     vector<string> getInterests() const;
 
-    // set interests
     void addInterest(string interest);
-
-    // display user info
     void display() const;
 };
 
-#endif // USER_H
+#endif
