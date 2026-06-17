@@ -169,6 +169,7 @@ void Recommender::displayRecommendations(int userID) {
         cout << " | Score: " << score;
         cout << " | Mutual friends: " << mutualFriends;
         cout << " | SharedInterests: " << sharedInterests;
+        cout << " | School: " << users[recommendedID].getSchool();
         cout << " | Location: " << users[recommendedID].getLocation();
         cout << endl;
     }
