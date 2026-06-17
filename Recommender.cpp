@@ -1,4 +1,4 @@
-#include "recommender.h"
+#include "Recommender.h"
 #include <iostream>
 #include <algorithm>
 using namespace std;
@@ -17,11 +17,19 @@ void Recommender::addFriendship(int userID1, int userID2) {
     graph.addFriend(userID1, userID2);
 }
 
+void Recommender::addUserInterest(int userID, const string &interest)
+{
+    if (hasUser(userID))
+    {
+        users[userID].addInterest(interest);
+    }
+}
+
 bool Recommender::hasUser(int userID) const{
     return users.find(userID) != users.end();
 }
 
-vector<pair<int,int>> Recommender::recommendFriends(int userID) {
+vector<pair<int,int>> Recommender::recommendFriends(int userID) { // returns sorted list of recommendations
     vector<pair<int,int>> recommendations;
 
     if (!hasUser(userID)) {
@@ -30,7 +38,7 @@ vector<pair<int,int>> Recommender::recommendFriends(int userID) {
 
     unordered_set<int> directFriends = graph.getNeighbors(userID);
 
-    //cold start
+    // cold start
     if (directFriends.empty()) {
         return coldStartRecommendations(userID);
     }
@@ -57,24 +65,19 @@ vector<pair<int,int>> Recommender::recommendFriends(int userID) {
         }
     }
 
-    //calculate each candiddate score
+    // calculate each candiddate score
     for (int candidateID : candidates) {
         int mutualFriends = (int)graph.getMutualFriends(userID, candidateID).size();
 
-        int finalScore = Score::calculateScore(
-            mutualFriends,
-            users[userID],
-            users[candidateID]
-            );
+        int finalScore = Score::calculateScore(mutualFriends, users[userID],users[candidateID]);
 
         recommendations.push_back({candidateID, finalScore});
     }
 
-    //sort highest score
-    sort(recommendations.begin(), recommendations.end()
-        [](pair<int,int> a, pair<int,int> b) {
-            return a.second > b.second;
-        });
+    // sort highest score
+    sort(recommendations.begin(), recommendations.end(), [](pair<int,int> a, pair<int,int> b) {
+        return a.second > b.second;
+    });
 
     return recommendations;
 }
@@ -92,12 +95,12 @@ vector<pair<int,int>> Recommender::coldStartRecommendations(int userID) {
         int otherID = pair.first;
         User otherUser = pair.second;
 
-        //dont recommend urself
+        // dont recommend urself
         if (otherID == userID) {
             continue;
         }
 
-        //no mutual (cold start)
+        // no mutual (cold start)
         int mutualFriends = 0;
 
         int finalScore = Score::calculateScore(
@@ -106,29 +109,29 @@ vector<pair<int,int>> Recommender::coldStartRecommendations(int userID) {
             otherUser
             );
 
-        //add extra profile matching (cold start)
+        // add extra profile matching (cold start)
         if (targetUser.getSchool() == otherUser.getSchool()) {
-            finalScore +== 2;
+            finalScore += 2;
         }
 
         if (targetUser.getMajor() == otherUser.getMajor()) {
-            finalScore +== 2;
+            finalScore += 2;
         }
 
         if (targetUser.getLocation() == otherUser.getLocation()) {
-            finalScore +== 2;
+            finalScore += 2;
         }
 
         if (targetUser.getInterests() == otherUser.getInterests()) {
-            finalScore +== 2;
+            finalScore += 2;
         }
 
         if (targetUser.getAge() == otherUser.getAge()) {
-            finalScore +== 2;
+            finalScore += 2;
         }
 
         if (finalScore > 0) {
-            recommendations.push_back({userID, finalScore});
+            recommendations.push_back({otherID, finalScore});
         }
     }
 
@@ -162,7 +165,7 @@ void Recommender::displayRecommendations(int userID) {
         int mutualFriends = (int)graph.getMutualFriends(userID, recommendedID).size();
         int sharedInterests = Score::countSharedInterests(users[userID], users[recommendedID]);
 
-        cout << "- " << users[recommendID].getName();
+        cout << "- " << users[recommendedID].getName();
         cout << " | Score: " << score;
         cout << " | Mutual friends: " << mutualFriends;
         cout << " | SharedInterests: " << sharedInterests;
@@ -186,8 +189,7 @@ void Recommender::displayBFSDistance(int userID, int maxDepth) {
         int otherID = pair.first;
         int distance = pair.second;
 
-        cout << users[userID].getName() << " is ";
-        cout << distance << " friendship miles away" << endl;
+        cout << users[userID].getName() << " is " << distance << " friendship miles away from " << users[otherID].getName() << endl;
     }
 }
 

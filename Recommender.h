@@ -1,6 +1,6 @@
 #ifndef RECOMMENDER_H
 #define RECOMMENDER_H
-#include "User.h"
+#include "user.h"
 #include "Graph.h"
 #include "Score.h"
 #include <unordered_map>
@@ -17,17 +17,20 @@ class Recommender {
     // add user
     void addUser(const User& user);
 
-    //add mutual
+    // add mutual
     void addFriendship(int userID1, int userID2);
 
-    //check if user exists
+    // add user interest
+    void addUserInterest(int userID, const string &interest);
+
+    // check if user exists
     bool hasUser(int userID) const;
 
     //get recommendation as pair (userID & score)
-    vector<pair<int, int>> recommendFriends(int userID);
+    vector<pair<int, int> > recommendFriends(int userID);
 
     //get recommendation for users with no friends (cold start)
-    vector<pair<int, int>> coldStartRecommendations(int userID);
+    vector<pair<int, int> > coldStartRecommendations(int userID);
 
     //print recommendations
     void displayRecommendations(int userID);

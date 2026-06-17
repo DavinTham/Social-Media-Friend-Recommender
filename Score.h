@@ -1,6 +1,6 @@
 #ifndef SCORE_H
 #define SCORE_H
-#include "User.h"
+#include "user.h"
 #include <string>
 #include <vector>
 using namespace std;
@@ -12,9 +12,12 @@ public:
 
     // count profile similarities
     static int sameLocationScore(const User& user1, const User& user2);
+    static int sameSchoolScore(const User &user1, const User &user2);
+    static int sameMajorScore(const User &user1, const User &user2);
+    static int sameAgeScore(const User &user1, const User &user2);
 
     // calculate final recommendation score
-    static int calculateScore(const User& user1, const User& user2);
+    static int calculateScore(int mutualFriends, const User& user1, const User& user2);
 };
 
 #endif

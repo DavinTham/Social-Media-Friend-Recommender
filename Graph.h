@@ -10,7 +10,7 @@ using namespace std;
 class Graph {
 private:
     // each user id maps to the set of ids they are friends with
-    unordered_map<int, unordered_set<int>> adjacency;
+    unordered_map<int, unordered_set<int> > adjacency;
 
 public:
     void addUser(int id);
